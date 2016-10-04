@@ -1,9 +1,5 @@
 package org.jlato.bench;
 
-import com.github.ptitjes.jmh.report.annotations.Axis;
-import com.github.ptitjes.jmh.report.annotations.AxisType;
-import com.github.ptitjes.jmh.report.annotations.BenchmarkReport;
-import com.github.ptitjes.jmh.report.annotations.Plot;
 import org.jlato.def.SetImplementation;
 import org.jlato.util.FactoryCreator;
 import org.openjdk.jmh.annotations.*;
@@ -25,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 public class Sets {
 
 	@Param({
+//			"Java HashSet",
+//			"Java TreeSet",
 			"Dexx HashSet",
 			"Dexx TreeSet",
 			"Javaslang HashSet",

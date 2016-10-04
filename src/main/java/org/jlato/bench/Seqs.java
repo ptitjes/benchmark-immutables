@@ -1,7 +1,6 @@
 package org.jlato.bench;
 
 import org.jlato.def.SeqImplementation;
-import org.jlato.def.SetImplementation;
 import org.jlato.util.FactoryCreator;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
@@ -21,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class Seqs {
 
 	@Param({
+//			"Java Array",
 			"Dexx Array",
 			"Dexx Vector",
 			"Javaslang Array",
