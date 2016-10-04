@@ -1,16 +1,12 @@
 package org.jlato.bench;
 
-import com.github.ptitjes.jmh.report.annotations.Axis;
-import com.github.ptitjes.jmh.report.annotations.AxisType;
-import com.github.ptitjes.jmh.report.annotations.BenchmarkReport;
-import com.github.ptitjes.jmh.report.annotations.Plot;
+import org.jlato.def.SeqImplementation;
 import org.jlato.def.SetImplementation;
 import org.jlato.util.FactoryCreator;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -22,17 +18,14 @@ import java.util.concurrent.TimeUnit;
 @Fork(2)
 @Warmup(iterations = 20)
 @Measurement(iterations = 10)
-public class Sets {
+public class Seqs {
 
 	@Param({
-			"Dexx HashSet",
-			"Dexx TreeSet",
-			"Javaslang HashSet",
-			"Javaslang TreeSet",
-			"Paguro HashSet",
-			"Paguro TreeSet",
-			"AFundation HashSet",
-			"AFundation TreeSet",
+			"Dexx Array",
+			"Dexx Vector",
+			"Javaslang Array",
+			"Javaslang Vector",
+			"Paguro Vector",
 	})
 	private String implementation;
 
@@ -45,66 +38,72 @@ public class Sets {
 	})
 	private int size;
 
-	private SetImplementation.Factory factory;
+	private SeqImplementation.Factory factory;
 
 	private Integer[] data;
-	private SetImplementation<Integer> fullSet;
+	private SeqImplementation<Integer> fullSeq;
 
 	@Setup(Level.Iteration)
 	public void createData() throws IOException {
-		factory = FactoryCreator.factoryForName("org.jlato.impl.sets." + implementation.replace(" ", "Set$") + "Factory");
+		factory = FactoryCreator.factoryForName("org.jlato.impl.seqs." + implementation.replace(" ", "Seq$") + "Factory");
 
 		data = new Integer[size];
 		for (int i = 0; i < size; i++) {
 			data[i] = (int) (Math.random() * Integer.MAX_VALUE);
 		}
-		fullSet = factory.of(INTEGER_COMPARATOR, data);
+		fullSeq = factory.of(data);
 	}
 
 	@Benchmark
 	public Object build() throws Exception {
-		return factory.of(INTEGER_COMPARATOR, data);
+		return factory.of(data);
 	}
 
 	@Benchmark
 	public int size() throws Exception {
-		SetImplementation<Integer> set = fullSet;
-		return set.size();
+		SeqImplementation<Integer> seq = fullSeq;
+		return seq.size();
 	}
 
 	@Benchmark
 	public Object addOneByOne() throws Exception {
-		SetImplementation<Integer> set = factory.empty(INTEGER_COMPARATOR);
+		SeqImplementation<Integer> seq = factory.empty();
 		for (Integer element : data) {
-			set.add(element);
+			seq.add(element);
 		}
-		return set;
+		return seq;
 	}
 
 	@Benchmark
 	public Object removeOneByOne() throws Exception {
-		SetImplementation<Integer> set = fullSet;
+		SeqImplementation<Integer> seq = fullSeq;
 		for (Integer element : data) {
-			set.remove(element);
+			seq.remove(element);
 		}
-		return set;
+		return seq;
 	}
 
 	@Benchmark
 	public void containsOneByOne(Blackhole blackhole) throws Exception {
-		SetImplementation<Integer> set = fullSet;
+		SeqImplementation<Integer> seq = fullSeq;
 		for (Integer element : data) {
-			blackhole.consume(set.contains(element));
+			blackhole.consume(seq.contains(element));
+		}
+	}
+
+	@Benchmark
+	public void getAll(Blackhole blackhole) throws Exception {
+		SeqImplementation<Integer> seq = fullSeq;
+		for (int i = 0; i < data.length; i++) {
+			blackhole.consume(seq.get(i));
 		}
 	}
 
 	@Benchmark
 	public void iterateAll(Blackhole blackhole) throws Exception {
-		SetImplementation<Integer> set = fullSet;
-		for (Integer element : set) {
+		SeqImplementation<Integer> seq = fullSeq;
+		for (Integer element : seq) {
 			blackhole.consume(element);
 		}
 	}
-
-	static final Comparator<Integer> INTEGER_COMPARATOR = Integer::compareTo;
 }
