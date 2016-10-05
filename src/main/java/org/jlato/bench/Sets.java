@@ -1,5 +1,6 @@
 package org.jlato.bench;
 
+import com.github.ptitjes.jmh.report.annotations.*;
 import org.jlato.def.SetImplementation;
 import org.jlato.util.FactoryCreator;
 import org.openjdk.jmh.annotations.*;
@@ -18,11 +19,16 @@ import java.util.concurrent.TimeUnit;
 @Fork(2)
 @Warmup(iterations = 20)
 @Measurement(iterations = 10)
+@Report(plots = {
+		@Plot(logScale = true),
+		@Plot(perParam = "size", filters = {@Filter(param = "implementation", pattern = ".* HashSet")}, orientation = Orientation.HORIZONTAL),
+		@Plot(perParam = "size", filters = {@Filter(param = "implementation", pattern = ".* TreeSet")}, orientation = Orientation.HORIZONTAL)
+})
 public class Sets {
 
 	@Param({
-//			"Java HashSet",
-//			"Java TreeSet",
+			"Java HashSet",
+			"Java TreeSet",
 			"Dexx HashSet",
 			"Dexx TreeSet",
 			"Javaslang HashSet",

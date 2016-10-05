@@ -1,5 +1,9 @@
 package org.jlato.bench;
 
+import com.github.ptitjes.jmh.report.annotations.Filter;
+import com.github.ptitjes.jmh.report.annotations.Orientation;
+import com.github.ptitjes.jmh.report.annotations.Plot;
+import com.github.ptitjes.jmh.report.annotations.Report;
 import org.jlato.def.SeqImplementation;
 import org.jlato.util.FactoryCreator;
 import org.openjdk.jmh.annotations.*;
@@ -17,10 +21,15 @@ import java.util.concurrent.TimeUnit;
 @Fork(2)
 @Warmup(iterations = 20)
 @Measurement(iterations = 10)
+@Report(plots = {
+		@Plot(logScale = true),
+		@Plot(perParam = "size", filters = {@Filter(param = "implementation", pattern = ".* Array")}, orientation = Orientation.HORIZONTAL),
+		@Plot(perParam = "size", filters = {@Filter(param = "implementation", pattern = ".* Vector")}, orientation = Orientation.HORIZONTAL)
+})
 public class Seqs {
 
 	@Param({
-//			"Java Array",
+			"Java Array",
 			"Dexx Array",
 			"Dexx Vector",
 			"Javaslang Array",
